@@ -25,7 +25,7 @@ public class HelloSelenium3Test {
 
     static int SCROLL_COUNT = 10;
 
-    static boolean test = true;
+    static boolean test = false;
 
     static Map<String, String> newsLink = new LinkedHashMap<>();
     static Map<String, String> articleLink = new LinkedHashMap<>();
@@ -277,9 +277,9 @@ public class HelloSelenium3Test {
         WebDriver driver = new ChromeDriver();
         JavascriptExecutor js = ((JavascriptExecutor) driver);
 
-        List<String> blog = new ArrayList<>();
+        List<Intent> blog = new ArrayList<>();
 
-        getData(driver, js, blog, blogLink);
+        getData2(driver, js, blog, blogLink);
 
         wanqu(driver, blog);
 
@@ -287,7 +287,7 @@ public class HelloSelenium3Test {
         String day = format.format(new Date());
 
 
-        saveData(blog, day, "blogs");
+        saveData2(blog, day, "blogs");
 
 
         driver.quit();
@@ -345,6 +345,62 @@ public class HelloSelenium3Test {
         }
     }
 
+
+    private void getData2(WebDriver driver, JavascriptExecutor js, List<Intent> article, Map<String, String> articleLink) throws InterruptedException {
+        for (String key : articleLink.keySet()) {
+
+
+            try {
+                driver.get(key);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(key);
+                continue;
+            }
+
+
+            if (key.endsWith("true")) {
+
+                for (int i = 0; i < SCROLL_COUNT; i++) {
+
+                    Thread.sleep(2000);
+
+                    js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+                }
+            }
+
+
+            String pageSource = driver.getPageSource();
+            Document doc = Jsoup.parse(pageSource);
+
+
+            Elements select = doc.select(articleLink.get(key));
+            for (Element element : select) {
+                String text = element.text();
+                if (text.equals("")) {
+                    continue;
+                }
+                text = text.trim().replaceAll("\n", "");
+
+                Intent intent = new Intent();
+                intent.setName(text);
+
+                if (element.tagName().equals("a")) {
+                    String href = element.attr("href");
+                    intent.setLink(href);
+                }
+
+                article.add(intent);
+
+            }
+
+            if (test) {
+                break;
+            }
+
+        }
+    }
+
     private void saveData(List<String> list, String day, String key) {
         try {
             String pathname = day + "-" + key + ".json";
@@ -362,8 +418,25 @@ public class HelloSelenium3Test {
 
     }
 
+    private void saveData2(List<Intent> list, String day, String key) {
+        try {
+            String pathname = day + "-" + key + ".json";
+            File file = new File(pathname);
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.append(new Gson().toJson(list));
+            fileWriter.flush();
 
-    static void wanqu(WebDriver driver, List<String> list) {
+            upyun.writeFile("/data/" + pathname, file);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    static void wanqu(WebDriver driver, List<Intent> list) {
         driver.get("https://wanqu.co/issues/");
         String wanqu = "wanqu-20210-2-8";
 
@@ -384,7 +457,11 @@ public class HelloSelenium3Test {
 
             for (Element element : select) {
                 String text = element.text();
-                list.add(text);
+
+                Intent intent = new Intent();
+                intent.setName(text);
+
+                list.add(intent);
 
                 File file = new File(wanqu);
                 if (!file.exists()) {
