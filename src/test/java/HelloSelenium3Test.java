@@ -35,7 +35,6 @@ public class HelloSelenium3Test {
     // 运行前先设置好以下三个参数
     private static final String BUCKET_NAME = "myfiledata";
     private static final String OPERATOR_NAME = "op1";
-    private static final String OPERATOR_PWD = "Wli0d5U27a2rY3Ji6EXdX7C4yUbz0hwx";
 
 
     static UpYun upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
