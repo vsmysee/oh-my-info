@@ -6,8 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
-import org.junit.experimental.ParallelComputer;
-import org.junit.runner.JUnitCore;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -16,7 +14,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -413,6 +410,7 @@ public class HelloSelenium3Test {
 
         } catch (Exception e) {
             e.printStackTrace();
+            saveData(list, day, key);
         }
 
 
@@ -430,6 +428,7 @@ public class HelloSelenium3Test {
 
         } catch (Exception e) {
             e.printStackTrace();
+            saveData2(list, day, key);
         }
 
 
@@ -463,28 +462,8 @@ public class HelloSelenium3Test {
 
                 list.add(intent);
 
-                File file = new File(wanqu);
-                if (!file.exists()) {
-                    file.mkdir();
-                }
-
-                try {
-                    FileWriter fileWriter = new FileWriter(new File(file, index + ".md"));
-                    for (Element e : doc.select("div.lead > div > p")) {
-                        fileWriter.append("#" + element.text());
-                        fileWriter.append("\n");
-                        fileWriter.append(e.text());
-                        fileWriter.flush();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
                 index++;
-
             }
-
 
             driver.navigate().back();
 
