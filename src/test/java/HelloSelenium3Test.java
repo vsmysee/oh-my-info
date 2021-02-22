@@ -22,11 +22,13 @@ public class HelloSelenium3Test {
 
     static int SCROLL_COUNT = 10;
 
-    static boolean test = false;
+    static boolean test = true;
+
+    static boolean sync = true;
 
     static Map<String, String> newsLink = new LinkedHashMap<>();
     static Map<String, String> articleLink = new LinkedHashMap<>();
-    static Map<String, String> blogLink = new LinkedHashMap<>();
+    static List<Blog> blogLink = new ArrayList<>();
     static Map<String, String> bookLink = new LinkedHashMap<>();
 
     // 运行前先设置好以下三个参数
@@ -124,71 +126,72 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
-        blogLink.put("https://afoo.me/posts.html", "h2 > a");
-        blogLink.put("http://www.yinwang.org/", "li.title > a");
-        blogLink.put("https://manateelazycat.github.io/index.html", "a.post-title");
-        blogLink.put("https://spring.io/blog/category/releases", "h2.blog--title > a");
-        blogLink.put("https://spring.io/blog?page=2", "h2.blog--title > a");
-        blogLink.put("https://netflixtechblog.com", "h3");
-        blogLink.put("https://amazonaws-china.com/cn/blogs/china/", "h2.blog-post-title");
-        blogLink.put("https://amazonaws-china.com/cn/blogs/china/page/2/", "h2.blog-post-title");
-        blogLink.put("http://zhangyi.xyz/", "h1.post-title > a");
-        blogLink.put("http://zhangyi.xyz/page/2/", "h1.post-title > a");
-        blogLink.put("http://blog.devtang.com", "a.abstract-title");
-        blogLink.put("http://blog.devtang.com/page/2/", "a.abstract-title");
-        blogLink.put("https://onevcat.com/", "h1 > a");
-        blogLink.put("https://www.topjavablogs.com/", "a.itemLink");
-        blogLink.put("https://pingcap.com/blog-cn/", "h1.title > a");
-        blogLink.put("https://blog.codingnow.com/", "h3.entry-header");
-        blogLink.put("https://coolshell.cn", "h2.entry-title > a");
-        blogLink.put("https://blogs.360.cn/", "h1.title > a");
-        blogLink.put("https://codechina.org/", "ul.wp-block-latest-posts > li > a");
-        blogLink.put("https://aijishu.com/", "h3.text-body");
-        blogLink.put("https://tech.meituan.com/", "h2.post-title > a");
-        blogLink.put("https://baotiao.github.io/", "h3.post-title");
-        blogLink.put("https://skyao.io/post/", "h3.article-title");
-        blogLink.put("https://yongyuan.name/blog/", "span.article");
-        blogLink.put("http://zhangtielei.com/", "h2 > a");
-        blogLink.put("https://liujiacai.net/", "a.post-link");
-        blogLink.put("http://duanple.com/", "h2 > a");
-        blogLink.put("https://colobu.com/", "a.article-title");
-        blogLink.put("http://blog.fnil.net/", "h1.entry-title > a");
-        blogLink.put("https://www.503error.com/", "h1.entry-title > a");
-        blogLink.put("https://mccxj.github.io/", "div.nav > ul > li > a");
-        blogLink.put("https://blog.cleancoder.com/", "ul > li > a");
-        blogLink.put("https://blog.wangqi.love/", "a.post-title-link");
-        blogLink.put("http://arthurchiao.art/index.html", "a.post-link");
-        blogLink.put("https://encrt.com/allpost/", "td.td-left > a");
-        blogLink.put("http://www.softwareishard.com/blog/", "h2 > a");
-        blogLink.put("https://www.amusinganalyst.com/", "h3 > a");
-        blogLink.put("https://tech.glowing.com/cn/", "h2.post-card-title");
-        blogLink.put("http://blueskykong.com/", "h1.post-title > a");
-        blogLink.put("http://itindex.net/", "h2 > a");
-        blogLink.put("https://www.cnblogs.com/xiexj/", "a.postTitle2");
-        blogLink.put("https://tech.youzan.com/", "h2.post-title > a");
-        blogLink.put("https://lotabout.me/", "ul > li > a");
-        blogLink.put("https://twobithistory.org/", "div.post-header > h1 > a.title-link");
-        blogLink.put("https://einverne.github.io/archive.html", "div.page-header > ul > li > a");
-        blogLink.put("https://happypeter.github.io/", "ul.posts > li > a");
-        blogLink.put("https://huang-jerryc.com/archives/", "a.post-title");
-        blogLink.put("https://www.duyidong.com/", "h2.post-title > a");
-        blogLink.put("http://deliberate-software.com/page/post/", "li.sidebar_li > a");
-        blogLink.put("https://thorstenball.com/blog/", "td > a");
-        blogLink.put("http://www.plainionist.net/", "h1.post-title > a");
-        blogLink.put("https://cnblogs.com/zhengyun_ustc/", "a.postTitle2");
-        blogLink.put("https://begriffs.com/", "li.row > a");
-        blogLink.put("https://boyter.org/", "body > ul > li > a");
-        blogLink.put("http://www.skywind.me/blog/", "h2 > a.title");
-        blogLink.put("https://tonsky.me/", "div.post > p > a");
-        blogLink.put("https://freemind.pluskid.org/archive/", "article > h1 > a");
-        blogLink.put("http://www.zreading.cn/", "h2.block-title > a");
-        blogLink.put("https://qcrao.com/archives/", "ul.listing > li > a");
-        blogLink.put("https://maintao.com/", "div > a");
-        blogLink.put("https://blog.wutj.info/", "h3.entry-title > a");
-        blogLink.put("https://www.barretlee.com/blog/archives/", "div.cate-detail > ul > li > a");
-        blogLink.put("https://blog.youxu.info/archive.html", "div.well > ul > li > a");
-        blogLink.put("https://martin.kleppmann.com/archive.html", "div#content > ul > li > a");
-        blogLink.put("https://hawstein.com/archive/", "h2.post-title");
+        blogLink.add(new Blog("https://yihui.org/cn/", "div.archive > p > a","https://yihui.org"));
+        blogLink.add(new Blog("https://afoo.me/posts.html", "h2 > a","https://afoo.me"));
+        blogLink.add(new Blog("http://www.yinwang.org/", "li.title > a","http://www.yinwang.org"));
+        blogLink.add(new Blog("https://manateelazycat.github.io/index.html", "a.post-title","https://manateelazycat.github.io"));
+        blogLink.add(new Blog("https://spring.io/blog/category/releases", "h2.blog--title > a",""));
+        blogLink.add(new Blog("https://spring.io/blog?page=2", "h2.blog--title > a",""));
+        blogLink.add(new Blog("https://netflixtechblog.com", "h3",""));
+        blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/", "h2.blog-post-title",""));
+        blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/page/2/", "h2.blog-post-title",""));
+        blogLink.add(new Blog("http://zhangyi.xyz/", "h1.post-title > a",""));
+        blogLink.add(new Blog("http://zhangyi.xyz/page/2/", "h1.post-title > a",""));
+        blogLink.add(new Blog("http://blog.devtang.com", "a.abstract-title",""));
+        blogLink.add(new Blog("http://blog.devtang.com/page/2/", "a.abstract-title",""));
+        blogLink.add(new Blog("https://onevcat.com/", "h1 > a",""));
+        blogLink.add(new Blog("https://www.topjavablogs.com/", "a.itemLink",""));
+        blogLink.add(new Blog("https://pingcap.com/blog-cn/", "h1.title > a",""));
+        blogLink.add(new Blog("https://blog.codingnow.com/", "h3.entry-header",""));
+        blogLink.add(new Blog("https://coolshell.cn", "h2.entry-title > a",""));
+        blogLink.add(new Blog("https://blogs.360.cn/", "h1.title > a",""));
+        blogLink.add(new Blog("https://codechina.org/", "ul.wp-block-latest-posts > li > a",""));
+        blogLink.add(new Blog("https://aijishu.com/", "h3.text-body",""));
+        blogLink.add(new Blog("https://tech.meituan.com/", "h2.post-title > a",""));
+        blogLink.add(new Blog("https://baotiao.github.io/", "h3.post-title",""));
+        blogLink.add(new Blog("https://skyao.io/post/", "h3.article-title",""));
+        blogLink.add(new Blog("https://yongyuan.name/blog/", "span.article",""));
+        blogLink.add(new Blog("http://zhangtielei.com/", "h2 > a",""));
+        blogLink.add(new Blog("https://liujiacai.net/", "a.post-link",""));
+        blogLink.add(new Blog("http://duanple.com/", "h2 > a",""));
+        blogLink.add(new Blog("https://colobu.com/", "a.article-title",""));
+        blogLink.add(new Blog("http://blog.fnil.net/", "h1.entry-title > a",""));
+        blogLink.add(new Blog("https://www.503error.com/", "h1.entry-title > a",""));
+        blogLink.add(new Blog("https://mccxj.github.io/", "div.nav > ul > li > a",""));
+        blogLink.add(new Blog("https://blog.cleancoder.com/", "ul > li > a",""));
+        blogLink.add(new Blog("https://blog.wangqi.love/", "a.post-title-link",""));
+        blogLink.add(new Blog("http://arthurchiao.art/index.html", "a.post-link",""));
+        blogLink.add(new Blog("https://encrt.com/allpost/", "td.td-left > a",""));
+        blogLink.add(new Blog("http://www.softwareishard.com/blog/", "h2 > a",""));
+        blogLink.add(new Blog("https://www.amusinganalyst.com/", "h3 > a",""));
+        blogLink.add(new Blog("https://tech.glowing.com/cn/", "h2.post-card-title",""));
+        blogLink.add(new Blog("http://blueskykong.com/", "h1.post-title > a",""));
+        blogLink.add(new Blog("http://itindex.net/", "h2 > a",""));
+        blogLink.add(new Blog("https://www.cnblogs.com/xiexj/", "a.postTitle2",""));
+        blogLink.add(new Blog("https://tech.youzan.com/", "h2.post-title > a",""));
+        blogLink.add(new Blog("https://lotabout.me/", "ul > li > a",""));
+        blogLink.add(new Blog("https://twobithistory.org/", "div.post-header > h1 > a.title-link",""));
+        blogLink.add(new Blog("https://einverne.github.io/archive.html", "div.page-header > ul > li > a",""));
+        blogLink.add(new Blog("https://happypeter.github.io/", "ul.posts > li > a",""));
+        blogLink.add(new Blog("https://huang-jerryc.com/archives/", "a.post-title",""));
+        blogLink.add(new Blog("https://www.duyidong.com/", "h2.post-title > a",""));
+        blogLink.add(new Blog("http://deliberate-software.com/page/post/", "li.sidebar_li > a",""));
+        blogLink.add(new Blog("https://thorstenball.com/blog/", "td > a",""));
+        blogLink.add(new Blog("http://www.plainionist.net/", "h1.post-title > a",""));
+        blogLink.add(new Blog("https://cnblogs.com/zhengyun_ustc/", "a.postTitle2",""));
+        blogLink.add(new Blog("https://begriffs.com/", "li.row > a",""));
+        blogLink.add(new Blog("https://boyter.org/", "body > ul > li > a",""));
+        blogLink.add(new Blog("http://www.skywind.me/blog/", "h2 > a.title",""));
+        blogLink.add(new Blog("https://tonsky.me/", "div.post > p > a",""));
+        blogLink.add(new Blog("https://freemind.pluskid.org/archive/", "article > h1 > a",""));
+        blogLink.add(new Blog("http://www.zreading.cn/", "h2.block-title > a",""));
+        blogLink.add(new Blog("https://qcrao.com/archives/", "ul.listing > li > a",""));
+        blogLink.add(new Blog("https://maintao.com/", "div > a",""));
+        blogLink.add(new Blog("https://blog.wutj.info/", "h3.entry-title > a",""));
+        blogLink.add(new Blog("https://www.barretlee.com/blog/archives/", "div.cate-detail > ul > li > a",""));
+        blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.well > ul > li > a",""));
+        blogLink.add(new Blog("https://martin.kleppmann.com/archive.html", "div#content > ul > li > a",""));
+        blogLink.add(new Blog("https://hawstein.com/archive/", "h2.post-title",""));
 
     }
 
@@ -343,12 +346,12 @@ public class HelloSelenium3Test {
     }
 
 
-    private void getData2(WebDriver driver, JavascriptExecutor js, List<Intent> article, Map<String, String> articleLink) throws InterruptedException {
-        for (String key : articleLink.keySet()) {
+    private void getData2(WebDriver driver, JavascriptExecutor js, List<Intent> article, List<Blog> blogData) throws InterruptedException {
+        for (Blog key : blogData) {
 
 
             try {
-                driver.get(key);
+                driver.get(key.access);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println(key);
@@ -356,7 +359,7 @@ public class HelloSelenium3Test {
             }
 
 
-            if (key.endsWith("true")) {
+            if (key.access.endsWith("true")) {
 
                 for (int i = 0; i < SCROLL_COUNT; i++) {
 
@@ -371,7 +374,7 @@ public class HelloSelenium3Test {
             Document doc = Jsoup.parse(pageSource);
 
 
-            Elements select = doc.select(articleLink.get(key));
+            Elements select = doc.select(key.select);
             for (Element element : select) {
                 String text = element.text();
                 if (text.equals("")) {
@@ -381,6 +384,7 @@ public class HelloSelenium3Test {
 
                 Intent intent = new Intent();
                 intent.setName(text);
+                intent.setUrl(key.url);
 
                 if (element.tagName().equals("a")) {
                     String href = element.attr("href");
@@ -406,7 +410,10 @@ public class HelloSelenium3Test {
             fileWriter.append(new Gson().toJson(list));
             fileWriter.flush();
 
-            upyun.writeFile("/data/" + pathname, file);
+            if (sync) {
+                upyun.writeFile("/data/" + pathname, file);
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -424,7 +431,9 @@ public class HelloSelenium3Test {
             fileWriter.append(new Gson().toJson(list));
             fileWriter.flush();
 
-            upyun.writeFile("/data/" + pathname, file);
+            if (sync) {
+                upyun.writeFile("/data/" + pathname, file);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
