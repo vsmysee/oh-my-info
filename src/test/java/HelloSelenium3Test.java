@@ -416,7 +416,7 @@ public class HelloSelenium3Test {
                     String url = title.get(i).getUrl();
 
                     int code = HttpRequest.get("http://myfiledata.test.upcdn.net/blog/" + url + ".html").send().statusCode();
-                    if (code != 404) {
+                    if (code == 200) {
                         continue;
                     }
 
