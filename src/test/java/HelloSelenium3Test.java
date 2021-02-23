@@ -1,7 +1,7 @@
 import com.UpYun;
 import com.google.gson.Gson;
+import com.upyun.UpException;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import jodd.http.HttpRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,9 +13,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,6 +46,7 @@ public class HelloSelenium3Test {
     static String html = "<html><style>body {width:85%;margin:auto;padding:20px}</style><body>_</body></html>";
 
     static void blogs() {
+
 
         blogLink.add(new Blog("https://afoo.me/posts.html", "h2 > a", "div.container > p"));
         blogLink.add(new Blog("http://www.yinwang.org/", "li.title > a", "div.inner > p"));
@@ -279,8 +282,16 @@ public class HelloSelenium3Test {
     @Test
     public void blogTest() throws InterruptedException {
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
+
+        ChromeOptions options = new ChromeOptions();
+
+        Map<String, Object> prefs = new HashMap<String, Object>();
+        prefs.put("profile.managed_default_content_settings.images", 2);
+        options.setExperimentalOption("prefs", prefs);
+
+        WebDriver driver = new ChromeDriver(options);
         JavascriptExecutor js = ((JavascriptExecutor) driver);
+
 
         List<Intent> blog = new ArrayList<>();
 
@@ -415,10 +426,13 @@ public class HelloSelenium3Test {
 
                     String url = title.get(i).getUrl();
 
-                    int code = HttpRequest.get("http://myfiledata.test.upcdn.net/blog/" + url + ".html").send().statusCode();
-                    if (code == 200) {
+                    try {
+                        String res = upyun.readFile("/blog/" + url + ".html");
                         continue;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
 
                     driver.findElements(By.cssSelector(key.select)).get(i).click();
 
