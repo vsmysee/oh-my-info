@@ -1,6 +1,7 @@
 import com.UpYun;
 import com.google.gson.Gson;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import jodd.http.HttpRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -49,6 +50,7 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://thzt.github.io/archives/", "h2.post-title > a  > span", "div.post-body > p"));
         blogLink.add(new Blog("https://yihui.org/cn/", "div.archive > p > a", "article > p"));
         blogLink.add(new Blog("https://manateelazycat.github.io/index.html", "a.post-title", "div.content > p"));
+
 
         blogLink.add(new Blog("https://coolshell.cn", "h2.entry-title > a", ""));
         blogLink.add(new Blog("https://spring.io/blog/category/releases", "h2.blog--title > a", ""));
@@ -410,6 +412,14 @@ public class HelloSelenium3Test {
                 int findCount = driver.findElements(By.cssSelector(key.select)).size();
 
                 for (int i = 0; i < findCount; i++) {
+
+                    String url = title.get(i).getUrl();
+
+                    int code = HttpRequest.get("http://myfiledata.test.upcdn.net/blog/" + url + ".html").send().statusCode();
+                    if (code != 404) {
+                        continue;
+                    }
+
                     driver.findElements(By.cssSelector(key.select)).get(i).click();
 
                     StringBuilder sb = new StringBuilder();
@@ -421,7 +431,7 @@ public class HelloSelenium3Test {
                     }
 
 
-                    saveHtml(title.get(i).getUrl(), html.replace("_", sb.toString()));
+                    saveHtml(url, html.replace("_", sb.toString()));
 
                     driver.navigate().back();
 
