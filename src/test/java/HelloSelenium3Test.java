@@ -1,6 +1,5 @@
 import com.UpYun;
 import com.google.gson.Gson;
-import com.upyun.UpException;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
@@ -17,7 +16,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -47,8 +45,22 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
-
         blogLink.add(new Blog("https://afoo.me/posts.html", "h2 > a", "div.container > p"));
+        for (int i = 2; i <= 46; i++) {
+            blogLink.add(new Blog("https://afoo.me/pages/p" + i + ".html", "h2 > a", "div.container > p"));
+        }
+
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/essays/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/opinions/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/computer/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/industry/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/startup/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/translations/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/literature/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/notes/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/misc/", "li.module-list-item > a", "div#main-content > p"));
+        blogLink.add(new Blog("http://www.ruanyifeng.com/blog/mjos/", "li.module-list-item > a", "div#main-content > p"));
+
         blogLink.add(new Blog("http://www.yinwang.org/", "li.title > a", "div.inner > p"));
         blogLink.add(new Blog("https://thzt.github.io/archives/", "h2.post-title > a  > span", "div.post-body > p"));
         blogLink.add(new Blog("https://yihui.org/cn/", "div.archive > p > a", "article > p"));
