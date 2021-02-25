@@ -43,7 +43,19 @@ public class HelloSelenium3Test {
 
     static String html = "<html><style>body {width:85%;margin:auto;padding:20px}</style><body>_</body></html>";
 
+
     static void blogs() {
+
+        //blogLink.add(new Blog("https://aimingoo.github.io/archives-post/", "div.archives-info-meta > a", "div.kg-card-markdown > p"));
+        blogLink.add(new Blog("http://macshuo.com/?page_id=93", "div#content > ul > li > a", "div.entry-content > p"));
+        blogLink.add(new Blog("http://mindhacks.cn/archives/", "ul.car-monthlisting > li > a", "div.entry-content > p"));
+        blogLink.add(new Blog("https://www.raychase.net/allarticles#全部文章", "ul.car-monthlisting > li > a", "div.entry-content > p"));
+
+        blogLink.add(new Blog("http://zhangtielei.com/", "h2 > a", "div.col-md-8 > p"));
+        for (int i = 2; i <= 11; i++) {
+            blogLink.add(new Blog("http://zhangtielei.com/posts/page" + i + "/index.html", "h2 > a", "div.col-md-8 > p"));
+        }
+
 
         blogLink.add(new Blog("https://maintao.com/", "div > a", "article > p"));
         blogLink.add(new Blog("https://coolshell.cn/featured", "ul.featured-post > li > a", "div.entry-content > p"));
@@ -70,7 +82,6 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://manateelazycat.github.io/index.html", "a.post-title", "div.content > p"));
 
 
-
         blogLink.add(new Blog("https://netflixtechblog.com", "h3", ""));
         blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/", "h2.blog-post-title", ""));
         blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/page/2/", "h2.blog-post-title", ""));
@@ -89,7 +100,6 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://baotiao.github.io/", "h3.post-title", ""));
         blogLink.add(new Blog("https://skyao.io/post/", "h3.article-title", ""));
         blogLink.add(new Blog("https://yongyuan.name/blog/", "span.article", ""));
-        blogLink.add(new Blog("http://zhangtielei.com/", "h2 > a", ""));
         blogLink.add(new Blog("https://liujiacai.net/", "a.post-link", ""));
         blogLink.add(new Blog("http://duanple.com/", "h2 > a", ""));
         blogLink.add(new Blog("https://colobu.com/", "a.article-title", ""));
@@ -434,6 +444,16 @@ public class HelloSelenium3Test {
 
             if (!key.url.equals("")) {
 
+                if (key.access.equals("http://mindhacks.cn/archives/")) {
+
+                    try {
+                        WebElement element = driver.findElement(By.cssSelector("a.car-toggler"));
+                        element.click();
+                    } catch (Exception e) {
+
+                    }
+                }
+
                 int findCount = driver.findElements(By.cssSelector(key.select)).size();
 
                 for (int i = 0; i < findCount; i++) {
@@ -462,6 +482,17 @@ public class HelloSelenium3Test {
                     saveHtml(url, html.replace("_", sb.toString()));
 
                     driver.navigate().back();
+
+
+                    if (key.access.equals("http://mindhacks.cn/archives/")) {
+
+                        try {
+                            WebElement element = driver.findElement(By.cssSelector("a.car-toggler"));
+                            element.click();
+                        } catch (Exception e) {
+
+                        }
+                    }
 
                 }
             }
