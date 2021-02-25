@@ -45,6 +45,9 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
+        blogLink.add(new Blog("https://maintao.com/", "div > a", "article > p"));
+        blogLink.add(new Blog("https://coolshell.cn/featured", "ul.featured-post > li > a", "div.entry-content > p"));
+
         blogLink.add(new Blog("https://afoo.me/posts.html", "h2 > a", "div.container > p"));
         for (int i = 2; i <= 46; i++) {
             blogLink.add(new Blog("https://afoo.me/pages/p" + i + ".html", "h2 > a", "div.container > p"));
@@ -67,9 +70,7 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://manateelazycat.github.io/index.html", "a.post-title", "div.content > p"));
 
 
-        blogLink.add(new Blog("https://coolshell.cn", "h2.entry-title > a", ""));
-        blogLink.add(new Blog("https://spring.io/blog/category/releases", "h2.blog--title > a", ""));
-        blogLink.add(new Blog("https://spring.io/blog?page=2", "h2.blog--title > a", ""));
+
         blogLink.add(new Blog("https://netflixtechblog.com", "h3", ""));
         blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/", "h2.blog-post-title", ""));
         blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/page/2/", "h2.blog-post-title", ""));
@@ -123,12 +124,13 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://freemind.pluskid.org/archive/", "article > h1 > a", ""));
         blogLink.add(new Blog("http://www.zreading.cn/", "h2.block-title > a", ""));
         blogLink.add(new Blog("https://qcrao.com/archives/", "ul.listing > li > a", ""));
-        blogLink.add(new Blog("https://maintao.com/", "div > a", ""));
         blogLink.add(new Blog("https://blog.wutj.info/", "h3.entry-title > a", ""));
         blogLink.add(new Blog("https://www.barretlee.com/blog/archives/", "div.cate-detail > ul > li > a", ""));
         blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.well > ul > li > a", ""));
         blogLink.add(new Blog("https://martin.kleppmann.com/archive.html", "div#content > ul > li > a", ""));
         blogLink.add(new Blog("https://hawstein.com/archive/", "h2.post-title", ""));
+        blogLink.add(new Blog("https://spring.io/blog/category/releases", "h2.blog--title > a", ""));
+        blogLink.add(new Blog("https://spring.io/blog?page=2", "h2.blog--title > a", ""));
 
     }
 
@@ -307,7 +309,7 @@ public class HelloSelenium3Test {
 
         List<Intent> blog = new ArrayList<>();
 
-        getData2(driver, js, blog, blogLink);
+        getBlogData(driver, js, blog, blogLink);
 
         wanqu(driver, blog);
 
@@ -374,7 +376,7 @@ public class HelloSelenium3Test {
     }
 
 
-    private void getData2(WebDriver driver, JavascriptExecutor js, List<Intent> article, List<Blog> blogData) throws InterruptedException {
+    private void getBlogData(WebDriver driver, JavascriptExecutor js, List<Intent> article, List<Blog> blogData) throws InterruptedException {
         for (Blog key : blogData) {
 
 
@@ -478,6 +480,8 @@ public class HelloSelenium3Test {
 
             if (sync) {
                 upyun.writeFile("/blog/" + key + ".html", html);
+            } else {
+                System.out.println(html);
             }
 
 
