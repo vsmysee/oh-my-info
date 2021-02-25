@@ -46,7 +46,7 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
-        //blogLink.add(new Blog("https://aimingoo.github.io/archives-post/", "div.archives-info-meta > a", "div.kg-card-markdown > p"));
+        blogLink.add(new Blog("https://aimingoo.github.io/archives-post/#true", "div.archives-info-meta > a", "div.kg-card-markdown > p"));
         blogLink.add(new Blog("http://macshuo.com/?page_id=93", "div#content > ul > li > a", "div.entry-content > p"));
         blogLink.add(new Blog("http://mindhacks.cn/archives/", "ul.car-monthlisting > li > a", "div.entry-content > p"));
         blogLink.add(new Blog("https://www.raychase.net/allarticles#全部文章", "ul.car-monthlisting > li > a", "div.entry-content > p"));
@@ -491,6 +491,16 @@ public class HelloSelenium3Test {
                             element.click();
                         } catch (Exception e) {
 
+                        }
+                    }
+
+                    if (key.access.endsWith("true")) {
+
+                        for (int j = 0; j < 5; j++) {
+
+                            Thread.sleep(200);
+
+                            js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
                         }
                     }
 
