@@ -2,6 +2,7 @@ import com.UpYun;
 import com.google.gson.Gson;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,8 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -45,6 +45,8 @@ public class HelloSelenium3Test {
 
 
     static void blogs() {
+
+        blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.well > ul > li > a", "div.post-content > P"));
 
         blogLink.add(new Blog("https://aimingoo.github.io/archives-post/#true", "div.archives-info-meta > a", "div.kg-card-markdown > p"));
         blogLink.add(new Blog("http://macshuo.com/?page_id=93", "div#content > ul > li > a", "div.entry-content > p"));
@@ -136,7 +138,6 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://qcrao.com/archives/", "ul.listing > li > a", ""));
         blogLink.add(new Blog("https://blog.wutj.info/", "h3.entry-title > a", ""));
         blogLink.add(new Blog("https://www.barretlee.com/blog/archives/", "div.cate-detail > ul > li > a", ""));
-        blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.well > ul > li > a", ""));
         blogLink.add(new Blog("https://martin.kleppmann.com/archive.html", "div#content > ul > li > a", ""));
         blogLink.add(new Blog("https://hawstein.com/archive/", "h2.post-title", ""));
         blogLink.add(new Blog("https://spring.io/blog/category/releases", "h2.blog--title > a", ""));
@@ -319,7 +320,16 @@ public class HelloSelenium3Test {
 
         List<Intent> blog = new ArrayList<>();
 
-        getBlogData(driver, js, blog, blogLink);
+
+        try {
+            Set<String> keySet = new HashSet<>();
+            for (String key : FileUtils.readFileToString(new File("key.txt"), "UTF8").split("\n")) {
+                keySet.add(key);
+            }
+            getBlogData(keySet, driver, js, blog, blogLink);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         wanqu(driver, blog);
 
@@ -328,6 +338,7 @@ public class HelloSelenium3Test {
 
 
         saveData2(blog, day, "blogs");
+        saveKey(keyList);
 
 
         driver.quit();
@@ -386,9 +397,9 @@ public class HelloSelenium3Test {
     }
 
 
-    private void getBlogData(WebDriver driver, JavascriptExecutor js, List<Intent> article, List<Blog> blogData) throws InterruptedException {
-        for (Blog key : blogData) {
+    private void getBlogData(Set<String> keySet, WebDriver driver, JavascriptExecutor js, List<Intent> article, List<Blog> blogData) throws InterruptedException {
 
+        for (Blog key : blogData) {
 
             try {
                 driver.get(key.access);
@@ -459,9 +470,13 @@ public class HelloSelenium3Test {
                 for (int i = 0; i < findCount; i++) {
 
                     String url = title.get(i).getUrl();
+                    if (keySet.contains(url)) {
+                        continue;
+                    }
 
                     try {
                         String res = upyun.readFile("/blog/" + url + ".html");
+                        keyList.add(url);
                         continue;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -521,6 +536,7 @@ public class HelloSelenium3Test {
 
             if (sync) {
                 upyun.writeFile("/blog/" + key + ".html", html);
+                keyList.add(key);
             } else {
                 System.out.println(html);
             }
@@ -551,6 +567,22 @@ public class HelloSelenium3Test {
         }
 
 
+    }
+
+    private List<String> keyList = new ArrayList<>();
+
+    private void saveKey(List<String> list) {
+        try {
+            File file = new File("key.txt");
+            FileWriter fileWriter = new FileWriter(file);
+            for (String intent : list) {
+                fileWriter.append(intent);
+                fileWriter.append("\n");
+            }
+            fileWriter.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveData2(List<Intent> list, String day, String key) {
