@@ -46,7 +46,7 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
-        blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.well > ul > li > a", "div.post-content > P"));
+        blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.col-md-9 > div.well > ul > li > a", "div.post-content > P"));
 
         blogLink.add(new Blog("https://aimingoo.github.io/archives-post/#true", "div.archives-info-meta > a", "div.kg-card-markdown > p"));
         blogLink.add(new Blog("http://macshuo.com/?page_id=93", "div#content > ul > li > a", "div.entry-content > p"));
@@ -148,6 +148,7 @@ public class HelloSelenium3Test {
 
     static void news() {
 
+        newsLink.put("https://www.pingwest.com/status", "section.news-info > p.title > a");
         newsLink.put("https://36kr.com", "a.article-item-title");
         newsLink.put("https://www.pedaily.cn/", "div.txt > h3 > a");
         newsLink.put("https://www.huxiu.com", "h5.article-item__content__title");
@@ -166,6 +167,7 @@ public class HelloSelenium3Test {
 
     static void article() {
 
+        articleLink.put("https://zhuanlan.zhihu.com/hackers#true", "h2.ContentItem-title > a");
         articleLink.put("https://toutiao.io#true", "div.content > h3 > a");
         articleLink.put("https://www.williamlong.info#true", "a.post-title");
         articleLink.put("https://readhub.cn/topics#true", "div#itemList > div > div > h2 > a");
