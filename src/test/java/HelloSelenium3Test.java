@@ -46,6 +46,17 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
+        blogLink.add(new Blog("https://insights.thoughtworks.cn", "h4.entry-title > a", "div.entry-content > p"));
+        for (int i = 2; i <= 62; i++) {
+            blogLink.add(new Blog("https://insights.thoughtworks.cn/page/" + i, "h4.entry-title > a", "div.entry-content > p"));
+        }
+
+
+        blogLink.add(new Blog("http://zhangyi.xyz/archives/", "a.post-title-link", "div.post-body > p"));
+        for (int i = 2; i <= 14; i++) {
+            blogLink.add(new Blog("http://zhangyi.xyz/archives/page/" + i, "a.post-title-link", "div.post-body > p"));
+
+        }
         blogLink.add(new Blog("https://blog.youxu.info/archive.html", "div.col-md-9 > div.well > ul > li > a", "div.post-content > P"));
 
         blogLink.add(new Blog("https://aimingoo.github.io/archives-post/#true", "div.archives-info-meta > a", "div.kg-card-markdown > p"));
@@ -87,8 +98,6 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://netflixtechblog.com", "h3", ""));
         blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/", "h2.blog-post-title", ""));
         blogLink.add(new Blog("https://amazonaws-china.com/cn/blogs/china/page/2/", "h2.blog-post-title", ""));
-        blogLink.add(new Blog("http://zhangyi.xyz/", "h1.post-title > a", ""));
-        blogLink.add(new Blog("http://zhangyi.xyz/page/2/", "h1.post-title > a", ""));
         blogLink.add(new Blog("http://blog.devtang.com", "a.abstract-title", ""));
         blogLink.add(new Blog("http://blog.devtang.com/page/2/", "a.abstract-title", ""));
         blogLink.add(new Blog("https://onevcat.com/", "h1 > a", ""));
@@ -172,8 +181,6 @@ public class HelloSelenium3Test {
         articleLink.put("https://www.williamlong.info#true", "a.post-title");
         articleLink.put("https://readhub.cn/topics#true", "div#itemList > div > div > h2 > a");
         articleLink.put("https://news.sogou.com/sci#true", "h4.new-title > a");
-        articleLink.put("https://insights.thoughtworks.cn", "h4.entry-title > a");
-        articleLink.put("https://insights.thoughtworks.cn/page/2/", "h4.entry-title > a");
         articleLink.put("https://www.tuicool.com/ah", "div.aricle_item_info > div > object > a");
         articleLink.put("https://www.tuicool.com/ah/0/1?lang=1", "div.aricle_item_info > div > object > a");
         articleLink.put("https://juejin.cn#true", "div.title-row > span > a");
