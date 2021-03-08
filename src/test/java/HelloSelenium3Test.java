@@ -1,3 +1,4 @@
+
 import com.UpYun;
 import com.google.gson.Gson;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -22,29 +23,39 @@ import java.util.*;
 
 public class HelloSelenium3Test {
 
+    private static final String BUCKET_NAME = "myfiledata";
+    private static final String OPERATOR_NAME = "op1";
+    private static final String OPERATOR_PWD = "Wli0d5U27a2rY3Ji6EXdX7C4yUbz0hwx";
+
+    static UpYun upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+
+    static String html = "<html><style>body {width:85%;margin:auto;padding:20px}</style><body>_</body></html>";
+
     static int SCROLL_COUNT = 10;
 
-    static boolean test = false;
+    static boolean test = true;
 
-    static boolean sync = true;
+    static boolean sync = false;
+
+
+    static void deploy() {
+        test = false;
+        sync = true;
+    }
+
+    static {
+        deploy();
+    }
 
     static Map<String, String> newsLink = new LinkedHashMap<>();
     static Map<String, String> articleLink = new LinkedHashMap<>();
     static List<Blog> blogLink = new ArrayList<>();
     static Map<String, String> bookLink = new LinkedHashMap<>();
 
-    // 运行前先设置好以下三个参数
-    private static final String BUCKET_NAME = "myfiledata";
-    private static final String OPERATOR_NAME = "op1";
-    private static final String OPERATOR_PWD = "Wli0d5U27a2rY3Ji6EXdX7C4yUbz0hwx";
-
-
-    static UpYun upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
-
-    static String html = "<html><style>body {width:85%;margin:auto;padding:20px}</style><body>_</body></html>";
-
 
     static void blogs() {
+
+        blogLink.add(new Blog("http://labazhou.net/archives/", "ul.archive-list > li > a", "article.post > p"));
 
         blogLink.add(new Blog("https://insights.thoughtworks.cn", "h4.entry-title > a", "div.entry-content > p"));
         for (int i = 2; i <= 62; i++) {
@@ -149,8 +160,6 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("https://www.barretlee.com/blog/archives/", "div.cate-detail > ul > li > a", ""));
         blogLink.add(new Blog("https://martin.kleppmann.com/archive.html", "div#content > ul > li > a", ""));
         blogLink.add(new Blog("https://hawstein.com/archive/", "h2.post-title", ""));
-        blogLink.add(new Blog("https://spring.io/blog/category/releases", "h2.blog--title > a", ""));
-        blogLink.add(new Blog("https://spring.io/blog?page=2", "h2.blog--title > a", ""));
 
     }
 
@@ -176,6 +185,8 @@ public class HelloSelenium3Test {
 
     static void article() {
 
+        articleLink.put("https://github.com/P-P-X/awesome-collector", "article.markdown-body > ul > li > a");
+        articleLink.put("https://zhuanlan.zhihu.com/prattle#true", "h2.ContentItem-title > a");
         articleLink.put("https://zhuanlan.zhihu.com/hackers#true", "h2.ContentItem-title > a");
         articleLink.put("https://toutiao.io#true", "div.content > h3 > a");
         articleLink.put("https://www.williamlong.info#true", "a.post-title");
@@ -204,10 +215,22 @@ public class HelloSelenium3Test {
         articleLink.put("https://draveness.me/", "article > a");
         articleLink.put("https://blog.jetbrains.com/idea/category/releases/", "article > h3");
         articleLink.put("https://hackernoon.com", "div.title-wrapper > h2 > a ");
+        articleLink.put("https://spring.io/blog/category/releases", "h2.blog--title > a");
+        articleLink.put("https://spring.io/blog?page=2", "h2.blog--title > a");
 
     }
 
     static void books() {
+
+        for (int i = 2021; i > 2015; i--) {
+            bookLink.put("http://www.oreilly.com.cn/index.php?func=completelist&pubyear=" + i, "a.tip");
+        }
+
+        bookLink.put("https://www.ituring.com.cn/book", "div.book-info > h4 > a");
+
+        for (int i = 1; i <= 65; i++) {
+            bookLink.put("https://www.ituring.com.cn/book?tab=book&sort=hot&page=" + i, "div.book-info > h4 > a");
+        }
 
         bookLink.put("https://scanlibs.com/category/books/", "h1.entry-title > a");
 
@@ -225,15 +248,10 @@ public class HelloSelenium3Test {
 
         bookLink.put("https://www.epubit.com/books", "div.list-title");
         bookLink.put("https://www.tuicool.com/books", "div.title > a");
-        bookLink.put("https://www.ituring.com.cn/book", "div.book-info > h4 > a");
-        bookLink.put("https://www.ituring.com.cn/book?tab=book&sort=hot&page=1", "div.book-info > h4 > a");
-        bookLink.put("https://www.ituring.com.cn/book?tab=book&sort=hot&page=2", "div.book-info > h4 > a");
+
         bookLink.put("https://www.manning.com/meap-catalog", "div.title");
         bookLink.put("https://www.freetechbooks.com/topics", "p.media-heading > a");
 
-        for (int i = 2021; i > 2015; i--) {
-            bookLink.put("http://www.oreilly.com.cn/index.php?func=completelist&pubyear=" + i, "a.tip");
-        }
 
     }
 
@@ -258,12 +276,7 @@ public class HelloSelenium3Test {
 
         getData(driver, js, news, newsLink);
 
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String day = format.format(new Date());
-
-
-        saveData(news, day, "news");
+        saveData(news, "news");
 
 
         driver.quit();
@@ -280,12 +293,7 @@ public class HelloSelenium3Test {
 
         getData(driver, js, book, bookLink);
 
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String day = format.format(new Date());
-
-
-        saveData(book, day, "books");
+        saveData(book, "books");
 
 
         driver.quit();
@@ -303,11 +311,7 @@ public class HelloSelenium3Test {
         getData(driver, js, article, articleLink);
 
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String day = format.format(new Date());
-
-
-        saveData(article, day, "articles");
+        saveData(article, "articles");
 
         driver.quit();
     }
@@ -342,11 +346,8 @@ public class HelloSelenium3Test {
 
         wanqu(driver, blog);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String day = format.format(new Date());
 
-
-        saveData2(blog, day, "blogs");
+        saveBlogData(blog, "blogs");
         saveKey(keyList);
 
 
@@ -484,7 +485,7 @@ public class HelloSelenium3Test {
                     }
 
                     try {
-                        String res = upyun.readFile("/blog/" + url + ".html");
+                        upyun.readFile("/blog/" + url + ".html");
                         keyList.add(url);
                         continue;
                     } catch (Exception e) {
@@ -542,7 +543,6 @@ public class HelloSelenium3Test {
     private void saveHtml(String key, String html) {
 
         try {
-
             if (sync) {
                 upyun.writeFile("/blog/" + key + ".html", html);
                 keyList.add(key);
@@ -550,31 +550,89 @@ public class HelloSelenium3Test {
                 System.out.println(html);
             }
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private void saveData(List<String> list, String day, String key) {
-        try {
-            String pathname = day + "-" + key + ".json";
-            File file = new File(pathname);
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.append(new Gson().toJson(list));
-            fileWriter.flush();
+    private void saveData(List<String> list, String key) {
 
-            if (sync) {
+        if (!sync) {
+            return;
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
+        List<String> days = new ArrayList<>();
+        days.add(format.format(date));
+        days.add(format.format(datePlus(date, 1)));
+        days.add(format.format(datePlus(date, 2)));
+        days.add(format.format(datePlus(date, 3)));
+        days.add(format.format(datePlus(date, 4)));
+
+
+        try {
+
+            for (String day : days) {
+
+                String pathname = day + "-" + key + ".json";
+                File file = new File(pathname);
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.append(new Gson().toJson(list));
+                fileWriter.flush();
+
                 upyun.writeFile("/data/" + pathname, file);
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            saveData(list, key);
+        }
+    }
+
+
+    public static Date datePlus(Date base, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(base);
+        cal.add(Calendar.DATE, days);
+        return cal.getTime();
+    }
+
+
+    private void saveBlogData(List<Intent> list, String key) {
+
+        if (!sync) {
+            return;
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
+        List<String> days = new ArrayList<>();
+        days.add(format.format(date));
+        days.add(format.format(datePlus(date, 1)));
+        days.add(format.format(datePlus(date, 2)));
+        days.add(format.format(datePlus(date, 3)));
+        days.add(format.format(datePlus(date, 4)));
+
+        try {
+
+            for (String day : days) {
+
+                String pathname = day + "-" + key + ".json";
+                File file = new File(pathname);
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.append(new Gson().toJson(list));
+                fileWriter.flush();
+
+                upyun.writeFile("/data/" + pathname, file);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            saveData(list, day, key);
+            saveBlogData(list, key);
         }
-
 
     }
 
@@ -592,26 +650,6 @@ public class HelloSelenium3Test {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void saveData2(List<Intent> list, String day, String key) {
-        try {
-            String pathname = day + "-" + key + ".json";
-            File file = new File(pathname);
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.append(new Gson().toJson(list));
-            fileWriter.flush();
-
-            if (sync) {
-                upyun.writeFile("/data/" + pathname, file);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            saveData2(list, day, key);
-        }
-
-
     }
 
 
