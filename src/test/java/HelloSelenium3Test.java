@@ -55,6 +55,10 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
+        for (int i = 1; i <= 120; i++) {
+            blogLink.add(new Blog("http://blog.sciencenet.cn/blog.php?mod=type&type=10&page=" + i + "#newtab", "td > a[title]", "div#blog_article > p"));
+        }
+
         blogLink.add(new Blog("http://labazhou.net/archives/", "ul.archive-list > li > a", "article.post > p"));
 
         blogLink.add(new Blog("https://insights.thoughtworks.cn", "h4.entry-title > a", "div.entry-content > p"));
@@ -476,6 +480,7 @@ public class HelloSelenium3Test {
                 }
 
                 int findCount = driver.findElements(By.cssSelector(key.select)).size();
+                String windowHandle = driver.getWindowHandle();
 
                 for (int i = 0; i < findCount; i++) {
 
@@ -495,18 +500,43 @@ public class HelloSelenium3Test {
 
                     driver.findElements(By.cssSelector(key.select)).get(i).click();
 
-                    StringBuilder sb = new StringBuilder();
-                    Elements pdata = Jsoup.parse(driver.getPageSource()).select(key.url);
-                    for (Element pdatum : pdata) {
-                        sb.append("<p>");
-                        sb.append(pdatum.text());
-                        sb.append("</p>");
+                    if (key.access.endsWith("newtab")) {
+                        Set<String> windowHandles = driver.getWindowHandles();
+                        windowHandles.remove(windowHandle);
+                        for (String handle : windowHandles) {
+                            driver.switchTo().window(handle);
+                            StringBuilder sb = new StringBuilder();
+                            Elements pdata = Jsoup.parse(driver.getPageSource()).select(key.url);
+                            for (Element pdatum : pdata) {
+                                sb.append("<p>");
+                                sb.append(pdatum.text());
+                                sb.append("</p>");
+                            }
+
+
+                            saveHtml(url, html.replace("_", sb.toString()));
+                            driver.close();
+
+                            driver.switchTo().window(windowHandle);
+                        }
+
+                    } else {
+
+
+                        StringBuilder sb = new StringBuilder();
+                        Elements pdata = Jsoup.parse(driver.getPageSource()).select(key.url);
+                        for (Element pdatum : pdata) {
+                            sb.append("<p>");
+                            sb.append(pdatum.text());
+                            sb.append("</p>");
+                        }
+
+
+                        saveHtml(url, html.replace("_", sb.toString()));
+
+                        driver.navigate().back();
+
                     }
-
-
-                    saveHtml(url, html.replace("_", sb.toString()));
-
-                    driver.navigate().back();
 
 
                     if (key.access.equals("http://mindhacks.cn/archives/")) {
