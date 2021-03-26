@@ -1,6 +1,7 @@
 
 import com.UpYun;
 import com.google.gson.Gson;
+import com.upyun.UpException;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -54,6 +55,13 @@ public class HelloSelenium3Test {
 
 
     static void blogs() {
+
+        blogLink.add(new Blog("http://www.zreading.cn/", "h2.block-title > a", "div.grap"));
+
+        for (int i = 2; i <= 483; i++) {
+            blogLink.add(new Blog("http://www.zreading.cn/page/" + i, "h2.block-title > a", "div.grap"));
+        }
+
 
         for (int i = 1; i <= 120; i++) {
             blogLink.add(new Blog("http://blog.sciencenet.cn/blog.php?mod=type&type=10&page=" + i + "#newtab", "td > a[title]", "div#blog_article > p"));
@@ -158,7 +166,6 @@ public class HelloSelenium3Test {
         blogLink.add(new Blog("http://www.skywind.me/blog/", "h2 > a.title", ""));
         blogLink.add(new Blog("https://tonsky.me/", "div.post > p > a", ""));
         blogLink.add(new Blog("https://freemind.pluskid.org/archive/", "article > h1 > a", ""));
-        blogLink.add(new Blog("http://www.zreading.cn/", "h2.block-title > a", ""));
         blogLink.add(new Blog("https://qcrao.com/archives/", "ul.listing > li > a", ""));
         blogLink.add(new Blog("https://blog.wutj.info/", "h3.entry-title > a", ""));
         blogLink.add(new Blog("https://www.barretlee.com/blog/archives/", "div.cate-detail > ul > li > a", ""));
@@ -335,11 +342,12 @@ public class HelloSelenium3Test {
         JavascriptExecutor js = ((JavascriptExecutor) driver);
 
 
-        List<Intent> blog = new ArrayList<>();
+        Set<Intent> blog = getBlogFromServer();
 
+
+        Set<String> keySet = new HashSet<>();
 
         try {
-            Set<String> keySet = new HashSet<>();
             for (String key : FileUtils.readFileToString(new File("key.txt"), "UTF8").split("\n")) {
                 keySet.add(key);
             }
@@ -348,14 +356,39 @@ public class HelloSelenium3Test {
             e.printStackTrace();
         }
 
-        wanqu(driver, blog);
 
-
-        saveBlogData(blog, "blogs");
-        saveKey(keyList);
+        saveBlogData(blog, "blogs", true);
+        saveKey(keySet);
 
 
         driver.quit();
+    }
+
+    private Set<Intent> getBlogFromServer() {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String day = format.format(date);
+
+        String pathname = day + "-blogs.json";
+
+        Set<Intent> dbList = new HashSet<>();
+
+        try {
+            String data = upyun.readFile("/data/" + pathname);
+            Intent[] db = new Gson().fromJson(data, Intent[].class);
+            for (Intent intent : db) {
+                dbList.add(intent);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
+        }
+
+        return dbList;
+
+
     }
 
 
@@ -411,7 +444,7 @@ public class HelloSelenium3Test {
     }
 
 
-    private void getBlogData(Set<String> keySet, WebDriver driver, JavascriptExecutor js, List<Intent> article, List<Blog> blogData) throws InterruptedException {
+    private void getBlogData(Set<String> keySet, WebDriver driver, JavascriptExecutor js, Set<Intent> allBLog, List<Blog> blogData) throws InterruptedException {
 
         for (Blog key : blogData) {
 
@@ -438,7 +471,7 @@ public class HelloSelenium3Test {
             String pageSource = driver.getPageSource();
             Document doc = Jsoup.parse(pageSource);
 
-            List<Intent> title = new ArrayList<>();
+            List<Intent> selectList = new ArrayList<>();
 
             Elements select = doc.select(key.select);
             for (Element element : select) {
@@ -461,11 +494,20 @@ public class HelloSelenium3Test {
                     intent.setLink(href);
                 }
 
-                title.add(intent);
+                selectList.add(intent);
 
             }
 
-            article.addAll(title);
+            int old = allBLog.size();
+
+            allBLog.addAll(selectList);
+
+            int newCount = allBLog.size();
+
+            if (old != newCount) {
+                saveBlogData(allBLog, "blogs", false);
+            }
+
 
             if (!key.url.equals("")) {
 
@@ -484,14 +526,15 @@ public class HelloSelenium3Test {
 
                 for (int i = 0; i < findCount; i++) {
 
-                    String url = title.get(i).getUrl();
+                    String url = selectList.get(i).getUrl();
                     if (keySet.contains(url)) {
                         continue;
                     }
 
+                    keySet.add(url);
+
                     try {
                         upyun.readFile("/blog/" + url + ".html");
-                        keyList.add(url);
                         continue;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -560,6 +603,9 @@ public class HelloSelenium3Test {
                     }
 
                 }
+
+                saveKey(keySet);
+
             }
 
 
@@ -575,7 +621,6 @@ public class HelloSelenium3Test {
         try {
             if (sync) {
                 upyun.writeFile("/blog/" + key + ".html", html);
-                keyList.add(key);
             } else {
                 System.out.println(html);
             }
@@ -631,7 +676,7 @@ public class HelloSelenium3Test {
     }
 
 
-    private void saveBlogData(List<Intent> list, String key) {
+    private void saveBlogData(Set<Intent> list, String key, boolean more) {
 
         if (!sync) {
             return;
@@ -641,10 +686,12 @@ public class HelloSelenium3Test {
 
         List<String> days = new ArrayList<>();
         days.add(format.format(date));
-        days.add(format.format(datePlus(date, 1)));
-        days.add(format.format(datePlus(date, 2)));
-        days.add(format.format(datePlus(date, 3)));
-        days.add(format.format(datePlus(date, 4)));
+        if (more) {
+            days.add(format.format(datePlus(date, 1)));
+            days.add(format.format(datePlus(date, 2)));
+            days.add(format.format(datePlus(date, 3)));
+            days.add(format.format(datePlus(date, 4)));
+        }
 
         try {
 
@@ -661,14 +708,13 @@ public class HelloSelenium3Test {
 
         } catch (Exception e) {
             e.printStackTrace();
-            saveBlogData(list, key);
+            saveBlogData(list, key, true);
         }
 
     }
 
-    private List<String> keyList = new ArrayList<>();
 
-    private void saveKey(List<String> list) {
+    private void saveKey(Set<String> list) {
         try {
             File file = new File("key.txt");
             FileWriter fileWriter = new FileWriter(file);
@@ -683,37 +729,4 @@ public class HelloSelenium3Test {
     }
 
 
-    static void wanqu(WebDriver driver, List<Intent> list) {
-        driver.get("https://wanqu.co/issues/");
-
-        List<WebElement> finds = driver.findElements(By.cssSelector("div.row > div > a"));
-
-        for (int i = 0; i < finds.size(); i++) {
-
-            finds = driver.findElements(By.cssSelector("div.row > div > a"));
-            finds.get(i).click();
-
-            String pageSource = driver.getPageSource();
-            Document doc = Jsoup.parse(pageSource);
-            Elements select = doc.select("h2.wq-header");
-
-
-            for (Element element : select) {
-                String text = element.text();
-
-                Intent intent = new Intent();
-                intent.setName(text);
-
-                list.add(intent);
-
-            }
-
-            driver.navigate().back();
-
-            if (test) {
-                break;
-            }
-
-        }
-    }
 }
