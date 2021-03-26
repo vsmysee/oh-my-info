@@ -378,7 +378,7 @@ public class HelloSelenium3Test {
             String data = upyun.readFile("/data/" + pathname);
             Intent[] db = new Gson().fromJson(data, Intent[].class);
             for (Intent intent : db) {
-                dbList.add(intent);
+                //dbList.add(intent);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -533,9 +533,11 @@ public class HelloSelenium3Test {
 
                     keySet.add(url);
 
+
+
                     try {
-                        upyun.readFile("/blog/" + url + ".html");
-                        continue;
+                        //upyun.readFile("/blog/" + url + ".html");
+                        //continue;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -627,6 +629,7 @@ public class HelloSelenium3Test {
 
         } catch (Exception e) {
             e.printStackTrace();
+            saveHtml(key,html);
         }
     }
 
