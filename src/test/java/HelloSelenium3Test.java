@@ -56,11 +56,6 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
-        //blogLink.add(new Blog("http://www.zreading.cn/", "h2.block-title > a", "div.grap"));
-
-
-
-
         for (int i = 1; i <= 120; i++) {
             blogLink.add(new Blog("http://blog.sciencenet.cn/blog.php?mod=type&type=10&page=" + i + "#newtab", "td > a[title]", "div#blog_article > p"));
         }
@@ -139,6 +134,11 @@ public class HelloSelenium3Test {
     }
 
     static void article() {
+
+        for (int i = 1; i < 10; i++) {
+            articleLink.put("https://www.jdon.com/approval/" + 15 * i, "h3.vid-name > a");
+        }
+        articleLink.put("https://www.jdon.com#dig", "div.info > a");
 
         articleLink.put("https://github.com/P-P-X/awesome-collector", "article.markdown-body > ul > li > a");
         articleLink.put("https://zhuanlan.zhihu.com/prattle#true", "h2.ContentItem-title > a");
@@ -391,8 +391,8 @@ public class HelloSelenium3Test {
 
 
     private void getData(WebDriver driver, JavascriptExecutor js, List<String> article, Map<String, String> articleLink) throws InterruptedException {
-        for (String key : articleLink.keySet()) {
 
+        for (String key : articleLink.keySet()) {
 
             try {
                 driver.get(key);
@@ -426,9 +426,6 @@ public class HelloSelenium3Test {
                 }
                 text = text.trim().replaceAll("\n", "");
 
-                if (element.tagName().equals("a")) {
-                    String href = element.attr("href");
-                }
 
                 article.add(text);
 
@@ -648,6 +645,10 @@ public class HelloSelenium3Test {
         days.add(format.format(datePlus(date, 2)));
         days.add(format.format(datePlus(date, 3)));
         days.add(format.format(datePlus(date, 4)));
+        days.add(format.format(datePlus(date, 5)));
+        days.add(format.format(datePlus(date, 6)));
+        days.add(format.format(datePlus(date, 7)));
+
 
 
         try {
