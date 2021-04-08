@@ -116,6 +116,7 @@ public class HelloSelenium3Test {
 
     static void news() {
 
+        newsLink.put("http://www.cocoachina.com#true", "div.news-headline > h3 > a");
         newsLink.put("https://www.pingwest.com/status", "section.news-info > p.title > a");
         newsLink.put("https://36kr.com", "a.article-item-title");
         newsLink.put("https://www.pedaily.cn/", "div.txt > h3 > a");
