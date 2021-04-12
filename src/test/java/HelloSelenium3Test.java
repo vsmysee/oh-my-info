@@ -56,6 +56,12 @@ public class HelloSelenium3Test {
 
     static void blogs() {
 
+        blogLink.add(new Blog("http://www.guoxue.com/?category_name=post#newtab", "ul.border-green > li > a[title]", "div.entry-content > p"));
+        for (int i = 2; i <= 34; i++) {
+            blogLink.add(new Blog("http://www.guoxue.com/?category_name=post&paged=" + i + "#newtab", "ul.border-green > li > a[title]", "div.entry-content > p"));
+        }
+
+
         for (int i = 1; i <= 120; i++) {
             blogLink.add(new Blog("http://blog.sciencenet.cn/blog.php?mod=type&type=10&page=" + i + "#newtab", "td > a[title]", "div#blog_article > p"));
         }
@@ -530,7 +536,6 @@ public class HelloSelenium3Test {
                     keySet.add(url);
 
 
-
                     try {
                         upyun.readFile("/blog/" + url + ".html");
                         continue;
@@ -626,7 +631,7 @@ public class HelloSelenium3Test {
 
         } catch (Exception e) {
             e.printStackTrace();
-            saveHtml(key,html);
+            saveHtml(key, html);
         }
     }
 
@@ -649,7 +654,6 @@ public class HelloSelenium3Test {
         days.add(format.format(datePlus(date, 5)));
         days.add(format.format(datePlus(date, 6)));
         days.add(format.format(datePlus(date, 7)));
-
 
 
         try {
@@ -695,6 +699,9 @@ public class HelloSelenium3Test {
             days.add(format.format(datePlus(date, 2)));
             days.add(format.format(datePlus(date, 3)));
             days.add(format.format(datePlus(date, 4)));
+            days.add(format.format(datePlus(date, 5)));
+            days.add(format.format(datePlus(date, 6)));
+            days.add(format.format(datePlus(date, 7)));
         }
 
         try {
